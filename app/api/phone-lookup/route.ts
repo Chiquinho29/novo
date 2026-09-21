@@ -21,21 +21,21 @@ export async function POST(request: Request) {
       'x-rapidapi-key': apiKey,
       'x-rapidapi-host': 'whatsapp-profile-data1.p.rapidapi.com',
     }
-    const formBody = new URLSearchParams({
-      phone_number: phone.replace(/\D/g, ''),
-    })
     let response = await fetch(endpoint, {
       method: 'POST',
-      headers: { ...headers, 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formBody.toString(),
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone_number: phone.replace(/\D/g, '') }),
       cache: 'no-store',
     })
 
     if (!response.ok && [400, 415, 422].includes(response.status)) {
+      const formBody = new URLSearchParams({
+        phone_number: phone.replace(/\D/g, ''),
+      })
       response = await fetch(endpoint, {
         method: 'POST',
-        headers: { ...headers, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone_number: phone.replace(/\D/g, '') }),
+        headers: { ...headers, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formBody.toString(),
         cache: 'no-store',
       })
     }
