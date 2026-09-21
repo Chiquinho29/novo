@@ -32,6 +32,7 @@ function ConsultandoContent() {
   const approximateLocation = getApproximateLocation(phone)
   const { data: profileResponse } = useSWR(phone ? ['/api/phone-lookup', phone] : null, fetchProfile, { revalidateOnFocus: false })
   const responsePicture = [
+    profileResponse?.profileImage,
     profileResponse?.data?.picture,
     profileResponse?.data?.data?.picture,
     profileResponse?.data?.profile?.picture,
