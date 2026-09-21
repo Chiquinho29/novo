@@ -7,7 +7,7 @@ function findPicture(value: unknown): string | null {
   if (typeof value === 'string' && /^https?:\/\//i.test(value) && /whatsapp|pps\.whatsapp|profile|picture/i.test(value)) return value
   if (!value || typeof value !== 'object') return null
   for (const [key, nested] of Object.entries(value)) {
-    if (/picture|photo|avatar|image/i.test(key) && typeof nested === 'string' && /^https?:\/\//i.test(nested)) return nested
+    if (/picture|photo|avatar|image|thumbnail|profile|pic|url/i.test(key) && typeof nested === 'string' && /^https?:\/\//i.test(nested)) return nested
     const found = findPicture(nested)
     if (found) return found
   }
@@ -69,8 +69,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `The API rejected the lookup (${response.status}).`, details: data }, { status: response.status })
     }
 
-    const result = NextResponse.json({ phone, data })
     const picture = findPicture(data)
+    const result = NextResponse.json({ phone, data, profileImage: picture })
     if (picture) {
       result.cookies.set('infochecker_profile_image', encodeURIComponent(picture), {
         httpOnly: false,
