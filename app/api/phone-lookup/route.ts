@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
 const endpoint = 'https://whatsapp-profile-data1.p.rapidapi.com/WhatsappProfileDataWithToken'
@@ -9,6 +10,11 @@ export async function POST(request: Request) {
 
     if (!phone || phone.replace(/\D/g, '').length < 7) {
       return NextResponse.json({ error: 'Enter a valid phone number.' }, { status: 400 })
+    }
+
+    const cookieStore = await cookies()
+    if (cookieStore.get('infochecker_lookup_used')?.value === '1') {
+      return NextResponse.json({ error: 'You have already used your free search on this browser.', code: 'LOOKUP_LIMIT_REACHED' }, { status: 429 })
     }
 
     const apiKey = process.env.RAPIDAPI_KEY
@@ -52,7 +58,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `The API rejected the lookup (${response.status}).`, details: data }, { status: response.status })
     }
 
-    return NextResponse.json({ phone, data })
+    const result = NextResponse.json({ phone, data })
+    result.cookies.set('infochecker_lookup_used', '1', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 * 365,
+      path: '/',
+    })
+    return result
   } catch {
     return NextResponse.json({ error: 'The lookup could not be completed right now.' }, { status: 500 })
   }

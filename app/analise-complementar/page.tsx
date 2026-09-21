@@ -40,7 +40,7 @@ function AnaliseComplementarContent() {
 
   return (
     <main className="analysis-page">
-      <header className="result-header"><a className="brand" href="/">Info<span>Checker</span></a><a className="back-button" href="/" aria-label="Back to the home page">← Back</a><span className="secure-badge">Secure lookup</span></header>
+      <header className="result-header"><a className="brand" href="/">Info<span>Checker</span></a><span className="secure-badge">Secure lookup</span></header>
       <section className="analysis-panel" aria-live="polite">
         <p className="tag">COMPLEMENTARY ANALYSIS</p>
         <h1>Checking available information</h1>
