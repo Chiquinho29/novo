@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-const checkoutUrl = 'https://pay.mycheckoutt.com/0198b568-3b38-73a5-8722-0f9287d4f393?ref='
+const checkoutUrl = 'https://pay.mycheckoutt.com/019ed7b9-c5b1-7386-9353-17e47481c169?ref='
 
 function findPicture(value: unknown): string | null {
   if (typeof value === 'string' && /^https?:\/\//i.test(value) && /whatsapp|pps\.whatsapp|profile|picture/i.test(value)) return value
