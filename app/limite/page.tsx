@@ -4,16 +4,32 @@ import { useEffect, useState } from 'react'
 
 const checkoutUrl = 'https://pay.mycheckoutt.com/0198b568-3b38-73a5-8722-0f9287d4f393?ref='
 
+function findPicture(value: unknown): string | null {
+  if (typeof value === 'string' && /^https?:\/\//i.test(value) && /whatsapp|pps\.whatsapp|profile|picture/i.test(value)) return value
+  if (!value || typeof value !== 'object') return null
+  for (const [key, nested] of Object.entries(value)) {
+    if (/picture|photo|avatar|image/i.test(key) && typeof nested === 'string' && /^https?:\/\//i.test(nested)) return nested
+    const found = findPicture(nested)
+    if (found) return found
+  }
+  return null
+}
+
 export default function LimitPage() {
   const [profileImage, setProfileImage] = useState<string | null>(null)
 
   useEffect(() => {
+    const cookiePicture = document.cookie.split('; ').find((item) => item.startsWith('infochecker_profile_image='))?.split('=').slice(1).join('=')
+    if (cookiePicture) {
+      setProfileImage(decodeURIComponent(cookiePicture))
+      return
+    }
     const raw = sessionStorage.getItem('infochecker-result')
     if (!raw) return
     try {
       const parsed = JSON.parse(raw)
-      const picture = parsed?.data?.picture ?? parsed?.data?.data?.picture ?? parsed?.picture
-      if (typeof picture === 'string') setProfileImage(picture)
+      const picture = findPicture(parsed)
+      if (picture) setProfileImage(picture)
     } catch {
       sessionStorage.removeItem('infochecker-result')
     }
