@@ -61,7 +61,7 @@ function ConsultandoContent() {
 
   return (
     <main className="checking-page">
-      <header className="result-header"><a className="brand" href="/">Info<span>Checker</span></a><a className="back-button" href="/" aria-label="Back to the home page">← Back</a><span className="secure-badge">Secure lookup</span></header>
+      <header className="result-header"><a className="brand" href="/">Info<span>Checker</span></a><span className="secure-badge">Secure lookup</span></header>
       <section className="checking-panel" aria-live="polite">
         <div className="checking-location-map"><ApproximateLocationMap location={approximateLocation} /></div>
         <div className="location-success-alert" role="status"><span className="success-badge" aria-hidden="true">✓</span><div><p className="tag">LOCATION</p><h1>Location found successfully!</h1></div></div>
