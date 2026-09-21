@@ -8,12 +8,12 @@ export async function POST(request: Request) {
     const phone = typeof body.phone === 'string' ? body.phone.replace(/[^\d+]/g, '') : ''
 
     if (!phone || phone.replace(/\D/g, '').length < 7) {
-      return NextResponse.json({ error: 'Digite um número de telefone válido.' }, { status: 400 })
+      return NextResponse.json({ error: 'Enter a valid phone number.' }, { status: 400 })
     }
 
     const apiKey = process.env.RAPIDAPI_KEY
     if (!apiKey) {
-      return NextResponse.json({ error: 'A chave da API não está configurada no servidor.' }, { status: 500 })
+      return NextResponse.json({ error: 'The API key is not configured on the server.' }, { status: 500 })
     }
 
     const headers = {
@@ -49,11 +49,11 @@ export async function POST(request: Request) {
         ? JSON.stringify(data)
         : String(data)
       console.error('[v0] RapidAPI lookup failed:', response.status, providerMessage)
-      return NextResponse.json({ error: `A API recusou a consulta (${response.status}).`, details: data }, { status: response.status })
+      return NextResponse.json({ error: `The API rejected the lookup (${response.status}).`, details: data }, { status: response.status })
     }
 
     return NextResponse.json({ phone, data })
   } catch {
-    return NextResponse.json({ error: 'Não foi possível realizar a consulta agora.' }, { status: 500 })
+    return NextResponse.json({ error: 'The lookup could not be completed right now.' }, { status: 500 })
   }
 }
