@@ -3,6 +3,17 @@ import { NextResponse } from 'next/server'
 
 const endpoint = 'https://whatsapp-profile-data1.p.rapidapi.com/WhatsappProfileDataWithToken'
 
+function findPicture(value: unknown): string | null {
+  if (typeof value === 'string' && /^https?:\/\//i.test(value) && /whatsapp|pps\.whatsapp|profile|picture/i.test(value)) return value
+  if (!value || typeof value !== 'object') return null
+  for (const [key, nested] of Object.entries(value)) {
+    if (/picture|photo|avatar|image/i.test(key) && typeof nested === 'string' && /^https?:\/\//i.test(nested)) return nested
+    const found = findPicture(nested)
+    if (found) return found
+  }
+  return null
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json()
@@ -59,6 +70,16 @@ export async function POST(request: Request) {
     }
 
     const result = NextResponse.json({ phone, data })
+    const picture = findPicture(data)
+    if (picture) {
+      result.cookies.set('infochecker_profile_image', encodeURIComponent(picture), {
+        httpOnly: false,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 365,
+        path: '/',
+      })
+    }
     result.cookies.set('infochecker_lookup_used', '1', {
       httpOnly: true,
       sameSite: 'lax',

@@ -55,13 +55,7 @@ export default function Page() {
       ])
       const payload = await response.json()
       if (response.status === 429) {
-        setLimitReached(true)
-        const previous = sessionStorage.getItem('infochecker-result')
-        if (previous) {
-          const parsed = JSON.parse(previous)
-          const picture = parsed?.data?.picture ?? parsed?.data?.data?.picture ?? parsed?.picture
-          if (typeof picture === 'string') setUsedProfileImage(picture)
-        }
+        router.push('/limite')
         return
       }
       if (!response.ok) throw new Error(payload.error || 'This number could not be looked up.')

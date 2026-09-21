@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server'
 
-const allowedHostnames = new Set(['pps.whatsapp.net'])
-
 export async function GET(request: Request) {
   const url = new URL(request.url).searchParams.get('url')
   if (!url) return new NextResponse('Missing image URL', { status: 400 })
@@ -13,7 +11,8 @@ export async function GET(request: Request) {
     return new NextResponse('Invalid image URL', { status: 400 })
   }
 
-  if (imageUrl.protocol !== 'https:' || !allowedHostnames.has(imageUrl.hostname)) {
+  const isAllowedHost = imageUrl.hostname === 'pps.whatsapp.net' || imageUrl.hostname.endsWith('.whatsapp.net')
+  if (imageUrl.protocol !== 'https:' || !isAllowedHost) {
     return new NextResponse('Image host not allowed', { status: 403 })
   }
 
