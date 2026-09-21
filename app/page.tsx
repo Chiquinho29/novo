@@ -26,11 +26,16 @@ function PhoneIllustration() {
 
 export default function Page() {
   const router = useRouter()
+  const [showLoading, setShowLoading] = useState(true)
   const [phone, setPhone] = useState('')
   const [country, setCountry] = useState(defaultCountry)
   const [countriesReady, setCountriesReady] = useState(false)
   const [open, setOpen] = useState<number | null>(null)
   const [helpOpen, setHelpOpen] = useState(false)
+  useEffect(() => {
+    const timer = window.setTimeout(() => setShowLoading(false), 3000)
+    return () => window.clearTimeout(timer)
+  }, [])
   useEffect(() => setCountriesReady(true), [])
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
@@ -61,6 +66,13 @@ export default function Page() {
     } finally { setLoading(false) }
   }
   const focusPhone = () => document.getElementById('phone')?.focus()
+
+  if (showLoading) {
+    return <main className="loading-screen" aria-label="Loading InfoChecker">
+      <div className="loading-mark" aria-hidden="true"><span>G</span></div>
+      <p>Loading, please wait</p>
+    </main>
+  }
 
   return <main>
     <header className="header"><a className="brand" href="#top">Info<span>Checker</span></a><nav><a href="#beneficios">Recursos</a><a href="#como-funciona">Como funciona</a><a href="#faq">Dúvidas</a><button onClick={focusPhone}>Consultar agora</button></nav><button className="menu" aria-label="Abrir menu">☰</button></header>
