@@ -4,10 +4,10 @@ import { Suspense, useEffect, useState, type CSSProperties } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 const statuses = [
-  'Preparando análise...',
-  'Organizando informações...',
-  'Verificando dados disponíveis...',
-  'Concluindo análise...',
+  'Preparing analysis...',
+  'Organizing information...',
+  'Checking available data...',
+  'Completing analysis...',
 ]
 
 function AnaliseComplementarContent() {
@@ -42,9 +42,9 @@ function AnaliseComplementarContent() {
     <main className="analysis-page">
       <header className="result-header"><a className="brand" href="/">Info<span>Checker</span></a><a className="back-button" href="/" aria-label="Voltar para a página inicial">← Voltar</a><span className="secure-badge">Consulta segura</span></header>
       <section className="analysis-panel" aria-live="polite">
-        <p className="tag">ANÁLISE COMPLEMENTAR</p>
-        <h1>Verificando informações disponíveis</h1>
-        <p className="analysis-subtitle">Verificando informações disponíveis para esta demonstração...</p>
+        <p className="tag">COMPLEMENTARY ANALYSIS</p>
+        <h1>Checking available information</h1>
+        <p className="analysis-subtitle">Checking available information para esta demonstração...</p>
         <div className="analysis-ring" style={{ '--progress': `${progress * 3.6}deg` } as CSSProperties}>
           <div><strong>{progress}%</strong><span>analisado</span></div>
         </div>

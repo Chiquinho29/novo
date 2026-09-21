@@ -3,8 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'InfoChecker — Consulta de Dados de Telefone',
-  description: 'Consulte dados de números de telefone de forma rápida, segura e confiável.',
+  title: 'InfoChecker — Phone Data Lookup',
+  description: 'Look up phone number data quickly, securely, and reliably.',
   generator: 'v0.app',
   icons: {
     icon: [
