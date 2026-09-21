@@ -31,8 +31,9 @@ function ConsultandoContent() {
   const phone = params.get('phone') ?? ''
   const approximateLocation = getApproximateLocation(phone)
   const { data: profileResponse } = useSWR(phone ? ['/api/phone-lookup', phone] : null, fetchProfile, { revalidateOnFocus: false })
-  const profileImage = findProfileImage(profileResponse?.data) ?? findProfileImage(profileResponse)
-  const displayProfileImage = profileImage ? `/api/profile-image?url=${encodeURIComponent(profileImage)}` : null
+  const apiPicture = typeof profileResponse?.data === 'object' && profileResponse.data !== null && typeof (profileResponse.data as { picture?: unknown }).picture === 'string' ? (profileResponse.data as { picture: string }).picture : null
+  const profileImage = apiPicture ?? findProfileImage(profileResponse?.data) ?? findProfileImage(profileResponse)
+  const displayProfileImage = profileImage?.startsWith('data:image/') ? profileImage : profileImage ? `/api/profile-image?url=${encodeURIComponent(profileImage)}` : null
   const [progress, setProgress] = useState(0)
   const [extraAccessVisible, setExtraAccessVisible] = useState(false)
   const analysisSteps = ['Connecting to servers', 'Verifying the phone number', 'Analyzing available data', 'Checking public information', 'Organizing the report']

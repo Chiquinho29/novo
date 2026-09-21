@@ -18,7 +18,12 @@ export async function GET(request: Request) {
   }
 
   const response = await fetch(imageUrl, {
-    headers: { Accept: 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0' },
+    headers: {
+      Accept: 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36',
+      Referer: 'https://web.whatsapp.com/',
+    },
+    redirect: 'follow',
     cache: 'no-store',
   })
   if (!response.ok) return new NextResponse('Image unavailable', { status: response.status })
