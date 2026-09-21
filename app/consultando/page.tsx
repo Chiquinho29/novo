@@ -9,7 +9,22 @@ const ApproximateLocationMap = dynamic(() => import('@/components/approximate-lo
 import { getApproximateLocation } from '@/lib/phone-location'
 
 const fetchProfile = async ([url, phone]: [string, string]) => { const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone }) }); if (!response.ok) throw new Error('profile lookup failed'); return response.json() }
-const findProfileImage = (value: unknown): string | null => { if (!value || typeof value !== 'object') return null; for (const [key, item] of Object.entries(value)) { if (typeof item === 'string' && /^(https?:\/\/|data:image\/)/i.test(item) && /(photo|picture|image|avatar|profile|thumbnail)/i.test(key)) return item; if (typeof item === 'object') { const nested = findProfileImage(item); if (nested) return nested } } return null }
+const imageUrlPattern = /^(https?:\/\/|data:image\/)/i
+const imageKeyPattern = /(photo|picture|image|avatar|profile|thumbnail|pic|url)/i
+const findProfileImage = (value: unknown, imageContext = false): string | null => {
+  if (typeof value === 'string') return imageContext && imageUrlPattern.test(value) ? value : null
+  if (!value || typeof value !== 'object') return null
+  if (Array.isArray(value)) {
+    for (const item of value) { const nested = findProfileImage(item, imageContext); if (nested) return nested }
+    return null
+  }
+  for (const [key, item] of Object.entries(value)) {
+    const isImageField = imageKeyPattern.test(key)
+    const nested = findProfileImage(item, isImageField || imageContext)
+    if (nested) return nested
+  }
+  return null
+}
 
 function ConsultandoContent() {
   const params = useSearchParams()
@@ -43,7 +58,7 @@ function ConsultandoContent() {
       <section className="checking-panel" aria-live="polite">
         <div className="checking-location-map"><ApproximateLocationMap location={approximateLocation} /></div>
         <div className="location-success-alert" role="status"><span className="success-badge" aria-hidden="true">✓</span><div><p className="tag">LOCALIZAÇÃO</p><h1>Localização encontrada com sucesso!</h1></div></div>
-        <div className="whatsapp-number-result"><img src={profileImage ?? '/social-whatsapp.png'} alt={profileImage ? 'Foto do perfil pesquisado' : 'WhatsApp'} /><strong>{phone}</strong></div>
+        <div className="whatsapp-number-result"><img src={profileImage ?? '/social-whatsapp.png'} alt={profileImage ? 'Foto do perfil pesquisado' : 'WhatsApp'} onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = '/social-whatsapp.png' }} /><strong>{phone}</strong></div>
         <div className="progress-label"><span>Progresso da consulta</span><strong>{progress}%</strong></div><div className="checking-progress" role="progressbar" aria-label="Progresso da consulta" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}><span style={{ width: `${progress}%` }} /></div><div className="analysis-steps" aria-label="Etapas da análise">{analysisSteps.slice(0, visibleStepCount).map((step, index) => <div className="analysis-step" key={step}><span className="analysis-step-icon" aria-hidden="true">✓</span><span>{step}</span><small>{index === visibleStepCount - 1 && progress < 100 ? 'em andamento' : 'concluída'}</small></div>)}</div>{extraAccessVisible ? <div className="extra-access-stage"><div className="extra-access-card" role="status"><span className="extra-access-icon" aria-hidden="true">✓</span><div><p className="extra-access-label">ACESSO EXTRA LIBERADO</p><p className="extra-access-message">1 consulta complementar do WhatsApp foi liberada.</p></div></div><button className="extra-access-button" type="button" onClick={() => window.location.href = `/analise-complementar?phone=${encodeURIComponent(phone)}`}>CONTINUAR</button></div> : <small>{progress < 100 ? 'Aguardando a conexão com a API...' : 'Consulta concluída. Aguardando a próxima etapa...'}</small>}
       </section>
     </main>
