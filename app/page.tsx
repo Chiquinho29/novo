@@ -47,7 +47,10 @@ export default function Page() {
     setMessage('Consultando os dados do número...')
     setResult(null)
     try {
-      const response = await fetch('/api/phone-lookup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone: `${country.dialCode}${phone.replace(/\D/g, '')}` }) })
+      const [response] = await Promise.all([
+        fetch('/api/phone-lookup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone: `${country.dialCode}${phone.replace(/\D/g, '')}` }) }),
+        new Promise(resolve => window.setTimeout(resolve, 5000)),
+      ])
       const payload = await response.json()
       if (!response.ok) throw new Error(payload.error || 'Não foi possível consultar este número.')
       setResult(payload.data)
