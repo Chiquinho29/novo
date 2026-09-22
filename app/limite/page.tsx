@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 
-const checkoutUrl = 'https://pay.mycheckoutt.com/019ed7b9-c5b1-7386-9353-17e47481c169?ref='
+const CHECKOUT_LINK_97 = 'https://pay.mycheckoutt.com/01a0ca73-e0cc-704e-aec5-892e6530d433?ref='
+const CHECKOUT_LINK_37 = 'https://pay.mycheckoutt.com/019ed7b9-c5b1-7386-9353-17e47481c169?ref='
 
 function findPicture(value: unknown): string | null {
   if (typeof value === 'string' && /^https?:\/\//i.test(value) && /whatsapp|pps\.whatsapp|profile|picture/i.test(value)) return value
@@ -43,8 +44,7 @@ export default function LimitPage() {
       <p className="tag">LIMIT REACHED</p>
       <h1 id="limit-title">Your free search has been used</h1>
       <p className="limit-copy">Unlock the complete report and view all available information for this number.</p>
-      <a className="limit-checkout" href={checkoutUrl} target="_blank" rel="noopener noreferrer">UNLOCK FULL REPORT</a>
-      <p className="limit-note">Your privacy and search data remain protected.</p>
+      <section className="limit-offers" aria-labelledby="limit-offers-title"><p className="limit-offers-label" id="limit-offers-title">CHOOSE YOUR ACCESS</p><div className="limit-offers-grid"><article className="offer-card offer-card-featured"><span className="offer-badge">BEST VALUE</span><h2>GET ALL APPS FOR ONLY $97</h2><p>Unlock the complete InfoChecker suite with all available apps.</p><strong className="offer-highlight">ONE OFFER — ALL APPS</strong><ul><li>InfoCheck</li><li>Location</li><li>InstaCheck</li><li>TinderCheck</li><li>FacebookCheck</li><li>WhatsAppCheck</li><li>TikTokCheck</li></ul><div className="offer-price">$97</div><a className="checkout-button" href={CHECKOUT_LINK_97} target="_blank" rel="noopener noreferrer">GET ALL APPS — $97</a></article><article className="offer-card"><span className="offer-badge">QUICK ACCESS</span><h2>INFOCHECK — ONLY $37</h2><p>Get access to the complete InfoCheck report.</p><ul><li>InfoCheck</li></ul><div className="offer-price">$37</div><a className="checkout-button" href={CHECKOUT_LINK_37} target="_blank" rel="noopener noreferrer">GET INFOCHECK — $37</a></article></div></section><p className="limit-note">Your privacy and search data remain protected.</p>
     </section>
   </main>
 }
