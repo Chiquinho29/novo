@@ -71,7 +71,15 @@ export async function POST(request: Request) {
         ? JSON.stringify(data)
         : String(data)
       console.error('[v0] RapidAPI lookup failed:', response.status, providerMessage)
-      return NextResponse.json({ error: `The API rejected the lookup (${response.status}).`, details: data }, { status: response.status })
+      const failedResult = NextResponse.json({ error: `The API rejected the lookup (${response.status}).`, details: data }, { status: response.status })
+      failedResult.cookies.set('infochecker_lookup_used', '1', {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 365,
+        path: '/',
+      })
+      return failedResult
     }
 
     const picture = findPicture(data)
@@ -94,6 +102,14 @@ export async function POST(request: Request) {
     })
     return result
   } catch {
-    return NextResponse.json({ error: 'The lookup could not be completed right now.' }, { status: 500 })
+    const failedResult = NextResponse.json({ error: 'The lookup could not be completed right now.' }, { status: 500 })
+    failedResult.cookies.set('infochecker_lookup_used', '1', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 * 365,
+      path: '/',
+    })
+    return failedResult
   }
 }
