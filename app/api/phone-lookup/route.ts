@@ -16,6 +16,11 @@ function findPicture(value: unknown): string | null {
 
 export async function POST(request: Request) {
   try {
+    const requestCookies = request.headers.get('cookie') ?? ''
+    if (/(^|;\s*)infochecker_lookup_used=1(?:;|$)/.test(requestCookies)) {
+      return NextResponse.json({ error: 'Free lookup already used.' }, { status: 429 })
+    }
+
     const body = await request.json()
     const phone = typeof body.phone === 'string' ? body.phone.replace(/[^\d+]/g, '') : ''
 
