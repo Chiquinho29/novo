@@ -3,12 +3,16 @@ import { NextResponse } from 'next/server'
 
 const endpoint = 'https://whatsapp-profile-data1.p.rapidapi.com/WhatsappProfileDataWithToken'
 
-function findPicture(value: unknown): string | null {
-  if (typeof value === 'string' && /^https?:\/\//i.test(value) && /whatsapp|pps\.whatsapp|profile|picture/i.test(value)) return value
+function findPicture(value: unknown, imageContext = false): string | null {
+  if (typeof value === 'string') {
+    const candidate = value.trim().replace(/\\\//g, '/')
+    if (imageContext && (/^(https?:\/\/|data:image\/)/i.test(candidate) || candidate.includes('pps.whatsapp.net'))) return candidate
+    return null
+  }
   if (!value || typeof value !== 'object') return null
   for (const [key, nested] of Object.entries(value)) {
-    if (/picture|photo|avatar|image|thumbnail|profile|pic|url/i.test(key) && typeof nested === 'string' && /^https?:\/\//i.test(nested)) return nested
-    const found = findPicture(nested)
+    const isImageField = /picture|photo|avatar|image|thumbnail|profile|pic|url|photo_url|profile_url/i.test(key)
+    const found = findPicture(nested, isImageField || imageContext)
     if (found) return found
   }
   return null
