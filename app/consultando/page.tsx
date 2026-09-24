@@ -9,10 +9,14 @@ const ApproximateLocationMap = dynamic(() => import('@/components/approximate-lo
 import { getApproximateLocation } from '@/lib/phone-location'
 
 const fetchProfile = async ([url, phone]: [string, string]) => { const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone }) }); if (!response.ok) throw new Error('profile lookup failed'); return response.json() }
+const normalizeImageUrl = (value: string) => value.trim().replace(/\\\//g, '/')
 const imageUrlPattern = /^(https?:\/\/|data:image\/)/i
 const imageKeyPattern = /(photo|picture|image|avatar|profile|thumbnail|pic|url)/i
 const findProfileImage = (value: unknown, imageContext = false): string | null => {
-  if (typeof value === 'string') return imageContext && imageUrlPattern.test(value) ? value : null
+  if (typeof value === 'string') {
+    const candidate = normalizeImageUrl(value)
+    return imageContext && imageUrlPattern.test(candidate) ? candidate : null
+  }
   if (!value || typeof value !== 'object') return null
   if (Array.isArray(value)) {
     for (const item of value) { const nested = findProfileImage(item, imageContext); if (nested) return nested }
@@ -37,7 +41,7 @@ function ConsultandoContent() {
     profileResponse?.data?.data?.picture,
     profileResponse?.data?.profile?.picture,
     profileResponse?.picture,
-  ].find((value): value is string => typeof value === 'string' && imageUrlPattern.test(value)) ?? null
+  ].map((value) => typeof value === 'string' ? normalizeImageUrl(value) : value).find((value): value is string => typeof value === 'string' && imageUrlPattern.test(value)) ?? null
   const profileImage = responsePicture ?? findProfileImage(profileResponse?.data) ?? findProfileImage(profileResponse)
   const displayProfileImage = profileImage?.startsWith('data:image/') ? profileImage : profileImage ? `/api/profile-image?url=${encodeURIComponent(profileImage)}` : null
   const [progress, setProgress] = useState(0)
