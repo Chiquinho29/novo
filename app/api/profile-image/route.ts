@@ -11,7 +11,7 @@ export async function GET(request: Request) {
     return new NextResponse('Invalid image URL', { status: 400 })
   }
 
-  const isAllowedHost = imageUrl.hostname === 'whatsapp.net' || imageUrl.hostname.endsWith('.whatsapp.net') || imageUrl.hostname === 'whatsapp.com' || imageUrl.hostname.endsWith('.whatsapp.com')
+  const isAllowedHost = imageUrl.hostname === 'whatsapp.net' || imageUrl.hostname.endsWith('.whatsapp.net') || imageUrl.hostname === 'whatsapp.com' || imageUrl.hostname.endsWith('.whatsapp.com') || imageUrl.hostname === 'fbcdn.net' || imageUrl.hostname.endsWith('.fbcdn.net')
   if (imageUrl.protocol !== 'https:' || !isAllowedHost) {
     return new NextResponse('Image host not allowed', { status: 403 })
   }
