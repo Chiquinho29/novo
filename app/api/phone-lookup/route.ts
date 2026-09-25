@@ -5,8 +5,8 @@ const endpoint = 'https://whatsapp-profile-data1.p.rapidapi.com/WhatsappProfileD
 
 function findPicture(value: unknown, imageContext = false): string | null {
   if (typeof value === 'string') {
-    const candidate = value.trim().replace(/\\\//g, '/')
-    if (imageContext && (/^(https?:\/\/|data:image\/)/i.test(candidate) || candidate.includes('pps.whatsapp.net'))) return candidate
+    const candidate = value.trim().replace(/\\\//g, '/').replace(/&amp;/g, '&')
+    if (imageContext && (/^(https?:\/\/|data:image\/)/i.test(candidate) || /(?:pps|mmg)\.whatsapp\.net|fbcdn\.net/i.test(candidate))) return candidate
     return null
   }
   if (!value || typeof value !== 'object') return null
