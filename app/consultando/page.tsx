@@ -39,8 +39,17 @@ function ConsultandoContent() {
     profileResponse?.profileImage,
     profileResponse?.data?.picture,
     profileResponse?.data?.data?.picture,
-    profileResponse?.data?.profile?.picture,
-    profileResponse?.picture,
+  profileResponse?.data?.profile?.picture,
+  profileResponse?.data?.profilePicture,
+  profileResponse?.data?.profile_image,
+  profileResponse?.data?.profileImage,
+  profileResponse?.data?.photo,
+  profileResponse?.data?.photoUrl,
+  profileResponse?.profilePicture,
+  profileResponse?.profile_image,
+  profileResponse?.picture,
+  profileResponse?.photo,
+  profileResponse?.photoUrl,
   ].map((value) => typeof value === 'string' ? normalizeImageUrl(value) : value).find((value): value is string => typeof value === 'string' && imageUrlPattern.test(value)) ?? null
   const profileImage = responsePicture ?? findProfileImage(profileResponse?.data) ?? findProfileImage(profileResponse)
   const displayProfileImage = profileImage ?? null
